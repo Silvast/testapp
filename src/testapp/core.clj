@@ -14,64 +14,115 @@
 	    [monger.result :refer [ok? has-error?]]
 	    [monger.conversion :refer [from-db-object]]
 	    [monger util result]
+	    [clojure.data.zip.xml :as zip-xml]
+	    [clojure.zip :as zip]
+	    [clojure.data.zip.xml :as zx]
+            [clojure.data.xml :as xml]
+            [testapp.xmlstuff :as xmlstuff]
 	    )
   (:import
 	   org.bson.types.ObjectId
    	   [com.mongodb MongoOptions])
 
-   (:import [org.bson.types ObjectId]
-            [com.mongodb DB WriteConcern])
+(:import [org.bson.types ObjectId]
+    [com.mongodb DB WriteConcern])
   )
 
+;; Calls to do with api. Codes reside in xmlstuff
 
-(def base_url
-;; "http://api.wunderground.com/api/#{api_key}/"
-"http://api.wunderground.com/api/c381dc34ce8ce50f/geolookup/conditions/forecast/q"
- ) 
+;; First, get the country codes for our cities
+(defn country [city]
+  (cond 
+     (= city "Tampere") "Finland"
+     (= city "London") "UK"
+     (= city "Durham") "NC" ))
 
-(defn- create-url
- "Create api url depending on which city you want to see"
- [country city]
- (str base_url "/" country "/" city ".xml"))
+;; Give wheather quick weather forecast on city 
+(defn weather [city]
+  (xmlstuff/getweather (country city) city)
+   )
 
-(defn api-call
- "Make an api call to wunderground API with country & city"
- [country city]
- (-> (create-url country city)
-     (http/get {:headers {"Accept-Encoding" ""}} )
-     :body
-     ;;parse
-  )
- )
-
+;; Things to do with mongodb, unfinished
 (let [conn (mg/connect)
-       db   (mg/get-db conn "monger-new")]
-(println (mc/find-maps db "documents")))
+       db   (mg/get-db conn "monger-new")])
 
-
-(def posts (atom [{:title "foo" :content "bar"}
-                  {:title "quux" :content "ref ref"}]))
+       ;;(println (mc/find-maps db "documents")))
 
 
  (defn add-dropdown []  
    [:section
+   [:h1 "My Weather App"]
    [:h2 "Choose a city"]
    [:p (drop-down "drop" ["Tampere" "London" "Durham NC"] )]
    (submit-button "Show weather")
    ])
 
+(defpage "/foo" []
+ (page/html5
+  [:section
+  (str (weather "Tampere"))
+  ])
+ )
 
 (defpage "/" []
   (page/html5
    [:head
     [:title "My weather App"]]
    [:section
-    (add-dropdown)]))
+   [:h2 "The weather now in Tampere"]
+    [:p (str (weather "Tampere"))]
+   [:h2 "And how about London?"]
+   [:p (str (weather "London"))]
+   [:h2 "Let's not forget Durham NC, the best of all Durhams!"]
+   [:p (str (weather "Durham"))]
+    ]
+    ))
 
-(defpage [:post "/"] {:keys [title content]}
-  (swap! posts #(conj % {:title title :content content}))
-  (response/redirect "/"))
+(defn foo2 []
+(weather "Tampere")
+;;"ansku" 
+)
+
+(defroutes home-routes
+(GET "/foo2" [] (foo2))
+(POST "/foo" []  (weather "Tampere"))
+)
+
+(def app
+  (handler/site home-routes))
+
+;;(defpage [:post "/"] {:keys [title content]}
+ ;; (swap! posts #(conj % {:title title :content content}))
+  ;;(response/redirect "/"))
 
 (defn -main [& args]
   (println "> Start my app")
+  (println "Let's see what the weather in Tampere is like:")
+  (println (weather "Tampere"))
+  (println "And how about London?")
+  (println (weather "London"))
+  (println "Let's not forget Durham NC, the best of all Durhams!")
+  (println (weather "Durham"))
   (server/start 8080))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

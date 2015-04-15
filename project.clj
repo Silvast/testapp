@@ -9,6 +9,7 @@
 		[hiccup "1.0.5"]
 		[com.novemberain/monger "2.0.1"]
 		[org.clojure/data.xml "0.0.8"]
+		[org.clojure/data.zip "0.1.1"]
 		[clj-http "0.2.1"]
 		[com.github.kyleburton/clj-xpath "1.4.4"]]
 
