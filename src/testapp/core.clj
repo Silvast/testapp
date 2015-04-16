@@ -1,4 +1,5 @@
 (ns testapp.core
+  (:gen-class :main true)
   (:use noir.core)
   (:use hiccup.form)
   (:use clj-xpath.core)
@@ -103,7 +104,8 @@
   (println (weather "London"))
   (println "Let's not forget Durham NC, the best of all Durhams!")
   (println (weather "Durham"))
-  (server/start 8080))
+  (server/start 8080)
+  )
 
 
 
