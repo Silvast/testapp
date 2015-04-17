@@ -3,7 +3,8 @@
   (:use noir.core)
   (:use hiccup.form)
   (:use clj-xpath.core)
-  (:require [compojure.handler :as handler]
+  (:require [clojure.tools.cli :refer [cli]]
+   	    [compojure.handler :as handler]
 	    [compojure.route :as route]
    	    [compojure.core :refer [GET POST defroutes]]
    	    [noir.server :as server]
@@ -31,39 +32,24 @@
 
 ;; Calls to do with api. Codes reside in xmlstuff
 
+;;for testing 
+(def apikeytest "c381dc34ce8ce50f")
+
+(def apikey (atom {}))
+
 ;; First, get the country codes for our cities
-(defn country [city]
+(defn getcountry [city]
   (cond 
      (= city "Tampere") "Finland"
      (= city "London") "UK"
      (= city "Durham") "NC" ))
 
 ;; Give wheather quick weather forecast on city 
-(defn weather [city]
-  (xmlstuff/getweather (country city) city)
-   )
 
-;; Things to do with mongodb, unfinished
-(let [conn (mg/connect)
-       db   (mg/get-db conn "monger-new")])
+(defn weather [city apikey]
+  (xmlstuff/getweather (getcountry city) city apikeytest))
+   ;;(:apikey @apikey)))
 
-       ;;(println (mc/find-maps db "documents")))
-
-
- (defn add-dropdown []  
-   [:section
-   [:h1 "My Weather App"]
-   [:h2 "Choose a city"]
-   [:p (drop-down "drop" ["Tampere" "London" "Durham NC"] )]
-   (submit-button "Show weather")
-   ])
-
-(defpage "/foo" []
- (page/html5
-  [:section
-  (str (weather "Tampere"))
-  ])
- )
 
 (defpage "/" []
   (page/html5
@@ -71,60 +57,27 @@
     [:title "My weather App"]]
    [:section
    [:h2 "The weather now in Tampere"]
-    [:p (str (weather "Tampere"))]
-   [:h2 "And how about London?"]
-   [:p (str (weather "London"))]
-   [:h2 "Let's not forget Durham NC, the best of all Durhams!"]
-   [:p (str (weather "Durham"))]
-    ]
-    ))
+   [:p "Apikey" (str (:apikey @apikey))]
+   ;; leaving the next row out fixes the NullPointer. Funny enough, this doesnt happen when I test this in repl.
+   [:p (str (weather "Tampere" apikey))]
+    ]))
+    
 
-(defn foo2 []
-(weather "Tampere")
-;;"ansku" 
-)
 
-(defroutes home-routes
-(GET "/foo2" [] (foo2))
-(POST "/foo" []  (weather "Tampere"))
-)
-
-(def app
-  (handler/site home-routes))
-
-;;(defpage [:post "/"] {:keys [title content]}
- ;; (swap! posts #(conj % {:title title :content content}))
-  ;;(response/redirect "/"))
+;; Give key to wunderground api in commandline (I dont want to give mine to github) 
 
 (defn -main [& args]
-  (println "> Start my app")
-  (println "Let's see what the weather in Tampere is like:")
-  (println (weather "Tampere"))
-  (println "And how about London?")
-  (println (weather "London"))
-  (println "Let's not forget Durham NC, the best of all Durhams!")
-  (println (weather "Durham"))
-  (server/start 8080)
-  )
+ 
+ ;; take argument that we got from commandline (user's api key) and swap it to our atom @apikey
+ (swap! apikey conj {:apikey args})
+;;that atom should now look like {:apikey "xxx"} where xxx is the apikey
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ ;;these are just for testing
+ (println @apikey)
+ (println (str (first (:apikey @apikey))))
+(println (xmlstuff/create-url "Finland" "Tampere" (str (first (:apikey @apikey))))) 
+(server/start 8080)
+)
+   
+  
+  

@@ -1,10 +1,14 @@
 # testapp
 
-FIXME: description
+This is a testapplication I am using to teach myself Clojure. It basically will get information on weather api (wunderground.com) and show status for three different cities. The code is probably horrible, but I am learning. 
 
 ## Installation
 
-Download from http://example.com/FIXME.
+Clone this repo and run 
+   
+    $lein uberjar 
+
+You need to have your own apikey which you can get from wunderground.com
 
 ## Usage
 
@@ -12,21 +16,7 @@ FIXME: explanation
 
     $ java -jar testapp-0.1.0-standalone.jar [args]
 
-## Options
 
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
 
 ## License
 
