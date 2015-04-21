@@ -27,8 +27,7 @@
    	   [com.mongodb MongoOptions])
 
 (:import [org.bson.types ObjectId]
-    [com.mongodb DB WriteConcern])
-  )
+    [com.mongodb DB WriteConcern]))
 
 ;; Calls to do with api. Codes reside in xmlstuff
 
@@ -44,12 +43,14 @@
      (= city "London") "UK"
      (= city "Durham") "NC" ))
 
-;; Give wheather quick weather forecast on city 
+;; Give quick weather forecast on city 
 
 (defn weather [city apikey]
   (xmlstuff/getweather (getcountry city) city apikeytest))
-   ;;(:apikey @apikey)))
 
+;; Stores weather observation to db
+;; (defn storeweather [city]
+  ;;(dbs/))
 
 (defpage "/" []
   (page/html5
@@ -57,10 +58,7 @@
     [:title "My weather App"]]
    [:section
    [:h2 "The weather now in Tampere"]
-   [:p "Apikey" (str (:apikey @apikey))]
-   ;; leaving the next row out fixes the NullPointer. Funny enough, this doesnt happen when I test this in repl.
-   [:p (str (weather "Tampere" apikey))]
-    ]))
+   [:p (str (weather "Tampere" apikey))]]))
     
 
 
@@ -75,9 +73,9 @@
  ;;these are just for testing
  (println @apikey)
  (println (str (first (:apikey @apikey))))
-(println (xmlstuff/create-url "Finland" "Tampere" (str (first (:apikey @apikey))))) 
-(server/start 8080)
-)
+;;(println (xmlstuff/create-url "Finland" "Tampere" (str (first (:apikey @apikey))))) 
+(println (weather "Tampere" apikey))
+(server/start 8080))
    
   
   
