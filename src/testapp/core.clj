@@ -45,10 +45,11 @@
      (= city "London") "UK"
      (= city "Durham") "NC" ))
 
-;; Give quick weather forecast on city 
-
-(defn weather [city apikey]
-  (xmlstuff/getweather (getcountry city) city apikeytest))
+;; Get weather conditions either today or 1-10 days into the future
+(defn weather [city apikey date]
+ (if (= date (c/to-long (t/today)))
+      (xmlstuff/getweathernow (getcountry city) city apikeytest)
+      (xmlstuff/getweatherfuture (getcountry city) city apikeytest date)))
 
 ;; Asks, using function getobs, whether or not there already is an observation with this date & city combination
 ;; If there is not, it stores weather observation to db by calling another function, storeobs
@@ -63,22 +64,20 @@
     [:title "My weather App"]]
    [:section
    [:h2 "The weather now in Tampere"]
-   [:p (str (weather "Tampere" apikey))]]))
+   [:p (str (weather "Tampere" apikey (c/to-long (t/today))))]]))
     
 
 
 ;; Give key to wunderground api in commandline (I dont want to give mine to github) 
 
 (defn -main [& args]
- 
  ;; take argument that we got from commandline (user's api key) and swap it to our atom @apikey
- (swap! apikey conj {:apikey args})
+(swap! apikey conj {:apikey args})
 ;;that atom should now look like {:apikey "xxx"} where xxx is the apikey
-
- ;;these are just for testing
- (println @apikey)
- (println (str (first (:apikey @apikey))))
-(println (weather "Tampere" apikey))
+;;these are just for testing
+(println @apikey)
+(println (str (first (:apikey @apikey))))
+(println (weather "Tampere" apikey (c/to-long (t/today))))
 (server/start 8080))
    
   
