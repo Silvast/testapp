@@ -8,7 +8,7 @@ Clone this repo and run
    
     $lein uberjar 
 
-You need to have your own apikey which you can get from wunderground.com
+This will give you a .jar file that you can run. You can give  your own apikey as a commandline argument. You can get your own apikey registering to wunderground.com
 
 ## Usage
 
@@ -20,7 +20,4 @@ FIXME: explanation
 
 ## License
 
-Copyright © 2015 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Do what ever you like with this. 
