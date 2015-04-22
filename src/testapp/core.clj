@@ -20,8 +20,10 @@
 	    [clojure.zip :as zip]
 	    [clojure.data.zip.xml :as zx]
             [clojure.data.xml :as xml]
+	    [clj-time.core :as t]
+	    [clj-time.coerce :as c]
             [testapp.xmlstuff :as xmlstuff]
-	    )
+	    [testapp.dbs :as dbs])
   (:import
 	   org.bson.types.ObjectId
    	   [com.mongodb MongoOptions])
@@ -48,9 +50,12 @@
 (defn weather [city apikey]
   (xmlstuff/getweather (getcountry city) city apikeytest))
 
-;; Stores weather observation to db
-;; (defn storeweather [city]
-  ;;(dbs/))
+;; Asks, using function getobs, whether or not there already is an observation with this date & city combination
+;; If there is not, it stores weather observation to db by calling another function, storeobs
+(defn getconditions [date city apikey]
+ (if (empty? (dbs/getobs date city))
+    (dbs/storeobs date city (weather city apikey))
+    (dbs/getobs date city)))
 
 (defpage "/" []
   (page/html5
@@ -73,7 +78,6 @@
  ;;these are just for testing
  (println @apikey)
  (println (str (first (:apikey @apikey))))
-;;(println (xmlstuff/create-url "Finland" "Tampere" (str (first (:apikey @apikey))))) 
 (println (weather "Tampere" apikey))
 (server/start 8080))
    
