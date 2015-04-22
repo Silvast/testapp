@@ -14,7 +14,6 @@
 		[clj-http "0.2.1"]
 		[clj-time "0.8.0"]
 		[com.github.kyleburton/clj-xpath "1.4.4"]]
-
   :main ^:skip-aot testapp.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
