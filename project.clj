@@ -12,6 +12,7 @@
 		[org.clojure/data.xml "0.0.8"]
 		[org.clojure/data.zip "0.1.1"]
 		[clj-http "0.2.1"]
+		[clj-time "0.8.0"]
 		[com.github.kyleburton/clj-xpath "1.4.4"]]
 
   :main ^:skip-aot testapp.core
