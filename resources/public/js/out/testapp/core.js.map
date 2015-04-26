@@ -1,0 +1,1 @@
+{"version":3,"file":"\/home\/seppola\/testapp\/testapp\/resources\/public\/js\/out\/testapp\/core.js","sources":["core.cljs"],"lineCount":11,"mappings":";AAAA;;;;;AAKA,AAACA;AACD,4BAAA,5BAACC;AACD,MAAA,NAACC","names":["cljs.core\/enable-console-print!","cljs.core\/println","js\/alert"]}

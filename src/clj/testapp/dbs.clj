@@ -11,9 +11,10 @@
 (def conn1 (mg/connect "weatherobs"))
 (def db (mg/get-db conn1 "weatherobs"))
 
-;; when core.clj calls this function, it stores an observation to db if it is not there already
+;; core.clj calls these functions to store  an observation to db if it is not there already
 ;; Each city has its own collection, so collections are "Tampere", "London" and "Durham NC"
-;; Each collection has values :date :weather :wind and : temperature
+;; Each collection has values :date and :fcttext_metric for future values and :date :weather for 
+;;current observations.
 ;; In real life there are multiple observations per day though..
 
 
