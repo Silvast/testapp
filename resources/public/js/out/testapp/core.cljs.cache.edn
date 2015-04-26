@@ -1,0 +1,2 @@
+;; Analyzed by ClojureScript 0.0-3211
+{:imports {query goog.dom.query}, :requires {event goog.events, goog.events goog.events, dom goog.dom, goog.dom goog.dom, query goog.dom.query}, :uses nil, :require-macros nil, :use-macros nil, :excludes #{}, :doc nil, :name testapp.core}

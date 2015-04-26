@@ -7,7 +7,6 @@
      )
 
 
-;; Right now these functions are looking for today's 
 
  (defn base_url [apikey]
    (clojure.string/join "/" ["http://api.wunderground.com/api" apikey "geolookup/conditions/forecast/q" ]))
@@ -26,6 +25,8 @@
  (defn currento [country city apikey] 
  		(-> (zip/xml-zip (dataa country city apikey)) zip/down zip/right zip/right zip/right zip/right zip/node))
 
+ ;; This was my attempt to try to do the same for future values as I was able to do for current_observation. For some reason, this
+ ;; doesn't quite work.
  (defn futuro [country city apikey]
                    (-> (zip/xml-zip (dataa country city apikey)) zip/down zip/right zip/right zip/right zip/right zip/right zip/node))
 
@@ -36,14 +37,17 @@
       (zip/node (zip/down
 		 (zx/xml1-> currento-zip :weather)))))
  
- 
+ ;; If the observation that was asked is in the future, try to navigate to <forecast> --> <txt_forecast>
+ ;;  --> <forecastdays> --> and then to each future days observation <period>1</period>
+ ;; this doesn't do it properly though..
 
 (defn getweatherfuture [country city apikey date]
     (let [futuro-zip (zip/xml-zip (futuro country city apikey))]
-          (zip/node (zip/down zip/down zip/down
+          (zip/node (zip/down
 		    (zx/xml1-> futuro-zip :fcttext_metric)))))
 
 
+;; This was the old version that worked. It only retrieved current observation 
 
  (defn getweather [country city apikey] 
   (let [currento-zip (zip/xml-zip (currento country city apikey))]

@@ -3,8 +3,12 @@
   (:use noir.core)
   (:use hiccup.form)
   (:use clj-xpath.core)
+  (:use ring.util.response)
   (:require [clojure.tools.cli :refer [cli]]
+   	    [clojure.java.io :as io]
+;;	    [qbits.jet.server :refer [run-jetty]]
    	    [compojure.handler :as handler]
+;;	    [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
 	    [compojure.route :as route]
    	    [compojure.core :refer [GET POST defroutes]]
    	    [noir.server :as server]
@@ -30,6 +34,32 @@
 
 (:import [org.bson.types ObjectId]
     [com.mongodb DB WriteConcern]))
+
+(defn handler [request]
+ {:body "My weather!"})
+
+(defn home
+   [req]
+   (render (io/resource "index.html") req))
+
+(defroutes resources-routes
+     (route/resources "/"))
+
+(defroutes routes
+   (GET "/" [] home)
+   (GET "/index.html" [] (resource-response "index.html" {:root "/"}))
+   ;;(GET "app.js" [] (resource-response "app.js" {:root "/public/js"}))
+   ;;(route/resources "/public")
+   (GET "/js.html" [] (resource-response "js.html" {:root "/public"}))
+   (route/not-found "<h1>Page not found</h1>"))
+
+(def app
+    (compojure.core/routes
+            resources-routes
+	           routes))
+
+;;(def app (-> routes 
+;;	  (wrap-resource "resources/public"))
 
 ;; Calls to do with api. Codes reside in xmlstuff
 
@@ -65,18 +95,11 @@
    [:section
    [:h2 "The weather now in Tampere"]
    [:p (str (weather "Tampere" apikey (c/to-long (t/today))))]]))
-    
 
-
-;; Give key to wunderground api in commandline (I dont want to give mine to github) 
 
 (defn -main [& args]
  ;; take argument that we got from commandline (user's api key) and swap it to our atom @apikey
 (swap! apikey conj {:apikey args})
-;;that atom should now look like {:apikey "xxx"} where xxx is the apikey
-;;these are just for testing
-(println @apikey)
-(println (str (first (:apikey @apikey))))
 (println (weather "Tampere" apikey (c/to-long (t/today))))
 (server/start 8080))
    
