@@ -38,7 +38,11 @@
 			;; :main testapp.hello
                         ;; :asset-path "out/testapp"
                          :pretty-print true}}]}
-  ;; :main ^:skip-aot testapp.core
+  :main ^:skip-aot testapp.core
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}}
+  :profiles {
+	  :uberjar {
+		  :aot :all
+	          :hooks [leiningen.cljsbuild]
+		  :cljsbuild {:jar true}}}
   :source-paths ["src/clj"])
